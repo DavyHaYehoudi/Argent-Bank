@@ -252,13 +252,32 @@ body,#root {
   width: 100%;
   flex: 1;
 }
-
+/* ******* EDIT USER INFO ******/
 .edit-button {
   border:1px solid  #00bc77 ;
   background-color: #00bc77;
   color: #fff;
   font-weight: bold;
   padding: 10px;
+  cursor: pointer;
+}
+
+.input-edit-user {
+  padding: 8px;
+  font-size: 1.1rem;
+  margin: 10px;
+}
+.input-edit-user:focus {
+  border:2px solid  #00bc77 ;
+  outline: none;
+}
+
+.user-editing-confirm button{
+  padding: 5px;
+  border:1px solid  #00bc77 ;
+  margin: 2px;
+  cursor: pointer;
+ border-radius: 3px;
 }
 
 .header {
