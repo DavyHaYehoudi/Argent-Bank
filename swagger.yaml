@@ -1,0 +1,518 @@
+swagger: '2.0'
+info:
+  title: Bank Argent API documentation
+  description: Contains all available API endpoints in this codebase
+  version: '1.0.0'
+  termsOfService: 'http://swagger.io/terms/'
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /user/login:
+    post:
+      tags:
+        - User Module
+      summary: Login
+      description: API for Login
+      parameters:
+        - in: body
+          name: body
+          description: Login Payload
+          required: true
+          schema:
+            $ref: '#/definitions/Login'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Login Successfully
+          schema:
+            $ref: '#/definitions/LoginResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /user/signup:
+    post:
+      tags:
+        - User Module
+      summary: Signup
+      description: API for Signup
+      parameters:
+        - in: body
+          name: body
+          description: Signup Payload
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: Signup Successfully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /user/profile:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for fetching a user profile
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: User profile retrieved successully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - User Module
+      summary: User Profile API
+      description: API for updating a user profile
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Update user profile attributes
+          required: true
+          schema:
+            $ref: '#/definitions/UserProfile'
+      produces:
+        - application/json
+      responses:
+        '200':
+          description: User profile retrieved successully
+          schema:
+            $ref: '#/definitions/ApiResponse'
+        '400':
+          description: Invalid Fields
+        '500':
+          description: Internal Server Error
+  /accounts:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+      summary: Get all accounts
+      description: This route retrieves a list of all the user accounts. A summary description for each account is provided with the title, amount and currency used.
+      responses:
+        '200':
+          description: successful getting all accounts
+          schema:
+                $ref: '#/definitions/Accounts'
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+  /accounts/{accountId}/transactions:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: query
+          name: currentMonth
+          description: Filter transactions to only include the current month
+          required: false
+          type: boolean
+      summary: Get all transactions with a filter
+      description: This route allows the user to retrieve all transactions for a particular account. It is possible to only obtain those for the current month.
+      responses:
+        '200':
+          description: successful getting all accounts
+          schema:
+                $ref: '#/definitions/Transactions'
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+  /accounts/{accountId}/transactions/{transactionId}:
+    get:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          required: true
+          type: string
+      summary: Get a specific transaction
+      description: This route allows the user to retrieve information relating to a particular transaction.
+      responses:
+        '200':
+          description: successful getting all accounts
+          schema:
+                $ref: '#/definitions/Transaction'
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+  /accounts/{accountId}/transactions/{transactionId}/notes:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Create notes
+          required: true
+          schema:
+            $ref: '#/definitions/NotesCreate'
+      summary: Create notes for a specific transaction
+      description: This route allows the user to create notes for a particular transaction.
+      responses:
+        '201':
+          description: resource created successfully
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+    patch:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Edit notes
+          required: true
+          schema:
+            $ref: '#/definitions/NotesEdit'
+      summary: Edit notes for a specific transaction
+      description: This route allows the user to edit notes for a particular transaction.
+      responses:
+        '200':
+          description: resource edited successfully
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+    delete:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          required: true
+          type: string
+      summary: Delete notes for a specific transaction
+      description: This route allows the user to remove notes for a particular transaction.
+      responses:
+        '204':
+          description: resource deleted successfully
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+  /accounts/{accountId}/transactions/{transactionId}/categories:
+    post:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Select a category
+          required: true
+          schema:
+            $ref: '#/definitions/CategoryCreate'
+      summary: Select a category for a specific transaction
+      description: This route allows the user to select a category for a particular transaction.
+      responses:
+        '201':
+          description: resource created successfully
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+    put:
+      security:
+        - Bearer: []
+      tags:
+        - Account
+      parameters:
+        - in: header
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+          type: string
+        - in: path
+          name: accountId
+          description: The ID of the account
+          required: true
+          type: string
+        - in: path
+          name: transactionId
+          description: The ID of the transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Edit category
+          required: true
+          schema:
+            $ref: '#/definitions/CategoryEdit'
+      summary: Edit a category for a specific transaction
+      description: This route allows the user to edit a category for a particular transaction.
+      responses:
+        '200':
+          description: resource edited successfully
+        '401':
+          description: Unauthorized - User is not authenticated
+        '404':
+          description: The ressource does not exist.
+securityDefinitions:
+  Bearer:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  User:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+      firstName:
+        type: string
+        description: user first name
+      lastName:
+        type: string
+        description: user last name
+  Login:
+    properties:
+      email:
+        type: string
+        description: user email
+      password:
+        type: string
+        description: user password
+  ApiResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+      message:
+        type: string
+      body:
+        type: object
+        properties:
+          id:
+            type: string
+          email:
+            type: string
+  LoginResponse:
+    type: object
+    properties:
+      token:
+        type: string
+  UserProfile:
+    type: object
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+  Account:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 664faa739ff7ec4362aefa42
+      title:
+        type: string
+        example: Argent Bank Checking (x8349)
+      balance:
+        type: number
+        example: 2082.79
+      currency:
+        type: string
+        example: $
+  Accounts:
+    type: array
+    items:
+      $ref: '#/definitions/Account'
+  Transaction:
+    type: object
+    properties:
+      id:
+        type: string
+        example: 664faa739ff7ec4362aefa42
+      date:
+        type: string
+        example: 2024-10-09
+      description:
+        type: string
+        example: Golden Sun Bakery
+      amount:
+        type: number
+        example: 50
+      currency:
+        type: string
+        example: $
+      typeTransaction:
+        type: string
+        example: Electronic
+      categoryId:
+        type: string
+        example: 664faa739ff7ec4362aefa42
+      notes:
+        type: string
+        example: For Tony's birthday
+  Transactions:
+    type: array
+    items:
+      $ref: '#/definitions/Transaction'
+  NotesCreate:
+    type: string
+    example: For Tony's birthday
+  NotesEdit:
+    type: string
+    example: For Stephanie's birthday
+  CategoryCreate:
+    type: string
+    example: 664faa739ff7ec4362aefa42
+  CategoryEdit:
+    type: string
+    example: 774faa739ff7ec8362aefa53
+  
+        
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
