@@ -1,10 +1,16 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { Post } from "../service/httpMethods";
+import { Post, Put } from "../service/httpMethods";
 
 const fetchUserData = createAsyncThunk(
   "user/userData",
   async ({ handleUnauthorized }) => {
     return await Post("user/profile", {}, null, handleUnauthorized);
+  }
+);
+const updateUserProfile = createAsyncThunk(
+  "user/updateUserProfile",
+  async ({ formData, handleUnauthorized }) => {
+    return await Put("user/profile", formData, null, handleUnauthorized);
   }
 );
 
@@ -17,19 +23,11 @@ const userSlice = createSlice({
     error: null,
   },
   reducers: {
-    editInfo: (state, action) => {
-      const { firstName, lastName } = action.payload ||{};
-      state.data = {
-        ...state.data,
-        firstName,
-        lastName,
-      };
-    },
     setToken: (state, action) => {
       state.token = action.payload;
     },
     resetStore: (state) => {
-      state.token="";
+      state.token = "";
     },
   },
   extraReducers: (builder) => {
@@ -45,10 +43,27 @@ const userSlice = createSlice({
       .addCase(fetchUserData.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
+      })
+      .addCase(updateUserProfile.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(updateUserProfile.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.error = null;
+        const { firstName, lastName } = action.payload.body;
+        state.data = {
+          ...state.data,
+          firstName,
+          lastName,
+        };
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
       });
   },
 });
 
-export const { resetStore, setToken, editInfo } = userSlice.actions;
-export { fetchUserData };
+export const { resetStore, setToken } = userSlice.actions;
+export { fetchUserData, updateUserProfile };
 export default userSlice.reducer;

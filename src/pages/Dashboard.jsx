@@ -1,58 +1,30 @@
-import { useEffect, useState } from "react";
+import useUserProfile from "./hooks/useUserProfile";
 import AccountSection from "../components/AccountSection";
-import { useDispatch, useSelector } from "react-redux";
-import { editInfo, fetchUserData } from "../features/userSlice";
-import useUnauthorizedRedirect from "../service/errors/useUnauthorizedRedirect";
 
 const Dashboard = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState(false);
-  const [userInfoEditing, setUserInfoEditing] = useState({
-    firstName: "",
-    lastName: "",
-  });
-  const dispatch = useDispatch();
-  const handleUnauthorized = useUnauthorizedRedirect;
-  useEffect(() => {
-    dispatch(fetchUserData({ handleUnauthorized }));
-  }, [dispatch, handleUnauthorized]);
-  const userInfo = useSelector((state) => state?.user?.data);
-  const { firstName, lastName } = userInfo || {};
-  const handleEdit = () => {
-    setIsEditing(true);
-    setUserInfoEditing({ firstName, lastName });
-  };
-  const handleSave = () => {
-    if (!userInfoEditing.firstName || !userInfoEditing.lastName) {
-      setError(true);
-      return;
-    }
-    setIsEditing(false);
-    dispatch(editInfo(userInfoEditing));
-    setError(false);
-  };
-  const handleCancel = () => {
-    setIsEditing(false);
-    setUserInfoEditing({ firstName: "", lastName: "" });
-    setError(false);
-  };
-  const handleChangeEdit = (e) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setUserInfoEditing((prev) => ({ ...prev, [name]: value }));
-    setError(false);
-  };
+  const {
+    isEditing,
+    error,
+    userInfoEditing,
+    firstName,
+    lastName,
+    handleEdit,
+    handleSave,
+    handleCancel,
+    handleChangeEdit,
+  } = useUserProfile();
+
   return (
     <main className="main bg-dark">
       <div className="header">
         <h1>
           Welcome back
           <br />
-          {!isEditing &&
-          <>
-          {firstName} {lastName} !
-          </>
-          }
+          {!isEditing && (
+            <>
+              {firstName} {lastName} !
+            </>
+          )}
         </h1>
         {isEditing ? (
           <div className="user-editing">

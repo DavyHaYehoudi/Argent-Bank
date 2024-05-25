@@ -1,4 +1,4 @@
-import {handleFetchError} from "./errors/handleFecthError.js"
+import { handleFetchError } from "./errors/handleFecthError.js";
 export const customFetch = async (
   endpoint,
   options = {},
@@ -20,7 +20,7 @@ export const customFetch = async (
     const response = await fetch(url, defaultOptions);
     if (!response.ok) {
       if (response.status === 401 || response.status === 403) {
-        unauthorizedCallback();
+        unauthorizedCallback(); 
       }
       const responseData = await response.json();
       const errorDetails = {
