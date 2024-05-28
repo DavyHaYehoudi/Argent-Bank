@@ -152,13 +152,8 @@ paths:
           description: The ID of the account
           required: true
           type: string
-        - in: query
-          name: currentMonth
-          description: Filter transactions to only include the current month
-          required: false
-          type: boolean
-      summary: Get all transactions with a filter
-      description: This route allows the user to retrieve all transactions for a particular account. It is possible to only obtain those for the current month.
+      summary: Get all transactions
+      description: This route allows the user to retrieve all transactions for a particular account. The API returns transactions for the current month by default
       responses:
         '200':
           description: successful getting all accounts
@@ -201,43 +196,6 @@ paths:
           description: Unauthorized - User is not authenticated
         '404':
           description: The ressource does not exist.
-  /accounts/{accountId}/transactions/{transactionId}/notes:
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - Account
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: accountId
-          description: The ID of the account
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: The ID of the transaction
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Create notes
-          required: true
-          schema:
-            $ref: '#/definitions/NotesCreate'
-      summary: Create notes for a specific transaction
-      description: This route allows the user to create notes for a particular transaction.
-      responses:
-        '201':
-          description: resource created successfully
-        '401':
-          description: Unauthorized - User is not authenticated
-        '404':
-          description: The ressource does not exist.
     patch:
       security:
         - Bearer: []
@@ -261,117 +219,14 @@ paths:
           type: string
         - in: body
           name: body
-          description: Edit notes
+          description: Create/Edit/Delete notes or categories
           required: true
           schema:
-            $ref: '#/definitions/NotesEdit'
-      summary: Edit notes for a specific transaction
+            $ref: '#/definitions/TransactionEdit'
+      summary: Edit fields for a specific transaction
       description: This route allows the user to edit notes for a particular transaction.
       responses:
-        '200':
-          description: resource edited successfully
-        '401':
-          description: Unauthorized - User is not authenticated
-        '404':
-          description: The ressource does not exist.
-    delete:
-      security:
-        - Bearer: []
-      tags:
-        - Account
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: accountId
-          description: The ID of the account
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: The ID of the transaction
-          required: true
-          type: string
-      summary: Delete notes for a specific transaction
-      description: This route allows the user to remove notes for a particular transaction.
-      responses:
         '204':
-          description: resource deleted successfully
-        '401':
-          description: Unauthorized - User is not authenticated
-        '404':
-          description: The ressource does not exist.
-  /accounts/{accountId}/transactions/{transactionId}/categories:
-    post:
-      security:
-        - Bearer: []
-      tags:
-        - Account
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: accountId
-          description: The ID of the account
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: The ID of the transaction
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Select a category
-          required: true
-          schema:
-            $ref: '#/definitions/CategoryCreate'
-      summary: Select a category for a specific transaction
-      description: This route allows the user to select a category for a particular transaction.
-      responses:
-        '201':
-          description: resource created successfully
-        '401':
-          description: Unauthorized - User is not authenticated
-        '404':
-          description: The ressource does not exist.
-    put:
-      security:
-        - Bearer: []
-      tags:
-        - Account
-      parameters:
-        - in: header
-          name: Authorization
-          description: Attach Bearer JWT token
-          required: true
-          type: string
-        - in: path
-          name: accountId
-          description: The ID of the account
-          required: true
-          type: string
-        - in: path
-          name: transactionId
-          description: The ID of the transaction
-          required: true
-          type: string
-        - in: body
-          name: body
-          description: Edit category
-          required: true
-          schema:
-            $ref: '#/definitions/CategoryEdit'
-      summary: Edit a category for a specific transaction
-      description: This route allows the user to edit a category for a particular transaction.
-      responses:
-        '200':
           description: resource edited successfully
         '401':
           description: Unauthorized - User is not authenticated
@@ -481,19 +336,15 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/Transaction'
-  NotesCreate:
-    type: string
-    example: For Tony's birthday
-  NotesEdit:
-    type: string
-    example: For Stephanie's birthday
-  CategoryCreate:
-    type: string
-    example: 664faa739ff7ec4362aefa42
-  CategoryEdit:
-    type: string
-    example: 774faa739ff7ec8362aefa53
-  
+  TransactionEdit:
+    type: object
+    properties:
+      notes: 
+        type: string
+        example: For Stephanie's birthday
+      category:
+        type: string
+        example: 774faa739ff7ec8362aefa53
         
       
     
