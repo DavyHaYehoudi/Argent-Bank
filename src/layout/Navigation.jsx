@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import useAuth from "./hooks/useAuth";
 
 const Navigation = () => {
-    const { token, firstName, handleLogout } = useAuth();
+  const { token, firstName, handleLogout } = useAuth();
 
   return (
     <nav className="main-nav">
